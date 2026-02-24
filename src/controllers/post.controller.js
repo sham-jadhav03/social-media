@@ -7,67 +7,67 @@ const imagekit = new ImageKit({
 });
 
 const createPostController = async (req, res) => {
+
   const file = await imagekit.files.upload({
-    file: await toFile(Buffer.from(req.file.buffer), 'file'),
-    fileName: 'Test',
-    folder:'post'
+    file: await toFile(Buffer.from(req.file.buffer), "file"),
+    fileName: "Test",
+    folder: "post",
   });
 
   const post = await postModel.create({
     caption: req.body.caption,
     imgUrl: file.url,
-    user: req.user.id
+    user: req.user.id,
   });
 
   res.status(201).json({
     message: "Post created successfully.",
-    post
-  })
+    post,
+  });
 };
 
-const getPostController = async(req, res) => {
-
+const getPostController = async (req, res) => {
+  
   const userId = req.user.id;
 
   const post = await postModel.find({
-    user: userId
+    user: userId,
   });
 
   res.status(200).json({
-    message:"post fetched successfully.",
-    post
-  })
-}
+    message: "post fetched successfully.",
+    post,
+  });
+};
 
-const getPostDetailsController = async(req, res) => {
-
+const getPostDetailsController = async (req, res) => {
   const userId = req.user.id;
   const postId = req.params.postId;
 
   const post = await postModel.findById(postId);
 
-  if(!post){
+  if (!post) {
     return res.status(404).json({
-      message: "Post not found."
+      message: "Post not found.",
     });
   }
 
   const isValidUser = post.user.toString() === userId;
 
-  if(!isValidUser){
+  if (!isValidUser) {
     return res.status(403).json({
-      message: "Forbidden Content."
-    })
+      message: "Forbidden Content.",
+    });
   }
 
   res.status(200).json({
-    message:"Post fetched successfully.",
-    post
-  })
-}
+    message: "Post fetched successfully.",
+    post,
+  });
+};
 
 module.exports = {
   createPostController,
   getPostController,
-  getPostDetailsController
+  getPostDetailsController,
 };
