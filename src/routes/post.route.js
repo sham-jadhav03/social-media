@@ -1,11 +1,32 @@
-const express = require('express');
+const express = require("express");
 const postRouter = express.Router();
-const multer = require('multer');
-const upload = multer({ storage: multer.memoryStorage()})
-const postController =require('../controllers/post.controller');
-const identifyUser = require('../middleware/auth.middleware');
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage() });
+const postController = require("../controllers/post.controller");
+const identifyUser = require("../middleware/auth.middleware");
+
+/**
+ * @route POST /api/posts [protected]
+ * @description Create a post with the content and image (optional) provided in the request body. The post should be associated with the user that the request come from
+ */
+postRouter.post(
+  "/",
+  upload.single("imgUrl"),
+  identifyUser,
+  postController.createPostController,
+);
+
+/**
+ * @route GET /api/posts/ [protected]
+ * @description Get all the posts created by the user that the request come from. also return the total number of posts created by the user
+ */
+postRouter.get("/", identifyUser, postController.getPostController);
+
+/**
+ * @route GET /api/posts/details/:postid
+ * @description return an detail about specific post with the id. also check whether the post belongs to the user that the request come from
+ */
+postRouter.get("/details/:postId", identifyUser, postController.getPostDetailsController)
 
 
-postRouter.post('/', upload.single("imgUrl"), identifyUser, postController.createPostController)
-
-module.exports=postRouter
+module.exports = postRouter;
