@@ -23,3 +23,26 @@ export const register  = async (body: any) => {
         token
     }
 }
+
+export const login = async (email:string, password:string) => {
+    const user = await repo.findByEmail(email);
+
+    if(!user) 
+        throw new Error("Invalid credentials");
+
+    const valid = await comparePassword(
+        password,
+        user.password
+    )
+
+    if(!valid) 
+        throw new Error("Invalid credentials");
+
+    const token = generateToken(user.id);
+
+    return {
+        user,
+        token
+    }
+    
+}
