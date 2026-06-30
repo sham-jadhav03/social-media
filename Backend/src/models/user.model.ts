@@ -1,7 +1,13 @@
-import mongoose, { model } from 'mongoose';
-import { lowercase, maxLength, minLength } from 'zod';
+import mongoose from 'mongoose';
 
-const userSchema = new mongoose.Schema({
+export interface Iuser {
+    username: string,
+    email: string,
+    password: string
+}
+
+
+const userSchema = new mongoose.Schema<Iuser>({
    username: {
     type: String,
     required: true,
@@ -25,6 +31,6 @@ const userSchema = new mongoose.Schema({
     timestamps:true
 })
 
-const userModel = mongoose.model('User', userSchema);
+const userModel = mongoose.model<Iuser>('User', userSchema);
 
 export default userModel;
